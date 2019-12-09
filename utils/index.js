@@ -24,5 +24,6 @@ const permute = (arr = []) => {
 
 module.exports = {
   computeIntcode,
+  batchExecute,
   permute,
 };
