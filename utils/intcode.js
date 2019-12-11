@@ -21,7 +21,7 @@ module.exports = batchExecute = (program, input) => {
  * @param {string} program  comma-separated instructions
  */
 module.exports = function* computeIntcode(program = '99') {
-  let input = null;
+  let input = undefined;
   let ptr = 0;
   let relativeBase = 0;
   const answers = [];
@@ -55,7 +55,12 @@ module.exports = function* computeIntcode(program = '99') {
         break;
 
       case 3: // write
-        mem[idx1] = input ? input : yield;
+        if (input === undefined) {
+          mem[idx1] = yield;
+        } else {
+          mem[idx1] = input;
+          input = undefined;
+        }
         ptr += 2;
         break;
 

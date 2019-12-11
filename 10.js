@@ -41,7 +41,7 @@ asteroids.forEach(a1 => {
 
     // Invert ratio values for NE/SW quadrants
     if (xQuad !== yQuad) {
-      ratio = 99 - ratio;
+      ratio = -ratio;
     }
 
     // Add each asteroid to the correct trajectory
