@@ -22,7 +22,7 @@ painter.next();
 panels[x][y] = 1; // part 2 addition
 
 while (true) {
-  touchedPanels.add(`${x}${y}`);
+  touchedPanels.add(`${x}_${y}`);
   const out1 = painter.next(panels[x][y]);
   const out2 = painter.next();
   if (out2.done) break;
