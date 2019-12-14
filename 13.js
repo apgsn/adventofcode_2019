@@ -11,58 +11,58 @@ let ballX = 0;
 
 
 const showStage = () => {
-    const tiles = {
-        0: ' ',		// empty
-        1: '⬜️',	// wall
-        2: '🔸',	// brick
-        3: '🔷',	// pad
-        4: '🔴',	// ball
-    }
-    console.log(stage
-        .map(row => row.map(el => tiles[el]).join(''))
-        .join('\n') + '\n')
+  const tiles = {
+    0: ' ',		// empty
+    1: '⬜️',	// wall
+    2: '🔸',	// brick
+    3: '🔷',	// pad
+    4: '🔴',	// ball
+  }
+  console.log(stage
+    .map(row => row.map(el => tiles[el]).join(''))
+    .join('\n') + '\n')
 }                           
 
 // build the stage
 while(true) {
-    let x = arkanoid.next();
-    let y = arkanoid.next();
-		let p = arkanoid.next();
+  let x = arkanoid.next();
+  let y = arkanoid.next();
+  let p = arkanoid.next();
 
-    stage[y.value][x.value] = p.value;
+  stage[y.value][x.value] = p.value;
 
-		if (p.value === 2) countBlocks++;
-		if (y.value == height - 1 && x.value == width - 1) break;
+  if (p.value === 2) countBlocks++;
+  if (y.value == height - 1 && x.value == width - 1) break;
 }
 
 // play the game until the stage is clear
 const play = setInterval(() => {
+  for(let i = 0; i < width; i++) 
+    if (stage[18][i] === 3)
+      padX = i;
+
+  for(let h = 0; h < height; h++)
     for(let i = 0; i < width; i++) 
-				if (stage[18][i] === 3)
-					padX = i;
+      if (stage[h][i] === 4)
+        ballX = i;
 
-    for(let h = 0; h < height; h++) 
-        for(let i = 0; i < width; i++) 
-						if (stage[h][i] === 4)
-							ballX = i;
+  let mov = 0;
+  if (padX > ballX) mov = -1;
+  if (padX < ballX) mov = 1;
 
-		let mov = 0;
-    if (padX > ballX) mov = -1;
-    if (padX < ballX) mov = 1;
+  let x = arkanoid.next(mov);
+  let y = arkanoid.next();
+  let p = arkanoid.next();
 
-    let x = arkanoid.next(mov);
-    let y = arkanoid.next();
-    let p = arkanoid.next();
+  if (p.done) {
+      console.log('Part one:', countBlocks);
+      console.log('Part two:', score);
+      clearInterval(play);
+  } else if (x.value == -1 && y.value == 0) {
+      score = p.value;
+  } else {
+      stage[y.value][x.value] = p.value;
+  }
 
-    if (p.done) {
-				console.log('Part one:', countBlocks);
-        console.log('Part two:', score);
-        clearInterval(play);
-    } else if (x.value == -1 && y.value == 0) {
-        score = p.value;
-    } else {
-        stage[y.value][x.value] = p.value;
-    }
-
-    if (p.value === 4) showStage();
+  if (p.value === 4) showStage();
 }, 3);
