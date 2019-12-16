@@ -79,12 +79,12 @@ module.exports = function* computeIntcode(program = '99') {
         break;
 
       case 7:
-        mem[idx3] = mem[idx1] < mem[idx2];
+        mem[idx3] = +(mem[idx1] < mem[idx2]);
         ptr += 4;
         break;
 
       case 8:
-        mem[idx3] = mem[idx1] === mem[idx2];
+        mem[idx3] = +(mem[idx1] === mem[idx2]);
         ptr += 4;
         break;
 
