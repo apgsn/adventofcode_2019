@@ -1,4 +1,4 @@
-
+const _ = require('lodash');
 const test0 = `10 ORE => 10 A
 1 ORE => 1 B
 7 A, 1 B => 1 C
@@ -110,7 +110,7 @@ const i = `2 JNLZG => 7 SJTKF
 
 
 
-const input = i;
+const input = test2;
 let chems = [];
 
 const reactions = input
@@ -142,7 +142,6 @@ chems.push({
   required: 0,
 });
 
-
 const calc = (name, depth = 1) => {
   const chem = chems.find(ch => ch.name === name);
   chem.depth = Math.max(chem.depth, depth);
@@ -151,20 +150,36 @@ const calc = (name, depth = 1) => {
   })
 };
 
-const totals = {};
+const calcOre = (p) => {
+  const cChems = _.cloneDeep(chems);
+  cChems[0].amount = p;
+  Object.keys(cChems[0].precursors).forEach(el => cChems[0].precursors[el] *= p);
+
+  const totals = {};
+  totals.FUEL = p;
+  cChems.forEach(chem => {
+    totals[chem.name] = totals[chem.name] || BigInt(0);
+    Object.entries(chem.precursors).forEach(([k, v]) => {
+      totals[k] = totals[k] || BigInt(0);
+      totals[k] = totals[k] + BigInt(Math.ceil(Number(totals[chem.name]) / Number(chem.amount))) * BigInt(v);
+    })
+  })
+  return totals.ORE;
+}
 
 calc('FUEL');
-totals.FUEL = 1;
 chems = chems.sort((a, b) => a.depth - b.depth).filter(chem => chem.depth);
 
+let left = 1;
+let right = 1000000000000;
+while(left < right && left + 1 !== right) {
+  const mid = Math.floor((left + right) / 2);
+  const ore = calcOre(mid);
+  if (ore < 1000000000000) {
+    left = mid;
+  } else {
+    right = mid - 1;
+  }
+}
 
-
-chems.forEach(chem => {
-  totals[chem.name] |= 0;
-  Object.entries(chem.precursors).forEach(([k, v]) => {
-    totals[k] |= 0;
-    totals[k] += Math.ceil(totals[chem.name] / chem.amount) * v;
-  })
-})
-
-console.log('Part one:', totals.ORE);
+console.log(left);
